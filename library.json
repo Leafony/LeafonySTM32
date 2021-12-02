@@ -1,0 +1,16 @@
+{
+  "name": "LeafonySTM32",
+  "description": "Library for Leafony STM32 basic kit",
+  "keywords": "Leafony",
+  "authors": {
+    "name": "Leafony",
+    "url": "https://docs.leafony.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Leafony/LeafonySTM32.git"
+  },
+  "version": "0.3.9",
+  "framework": "arduino",
+  "platforms": "ststm32"
+}
