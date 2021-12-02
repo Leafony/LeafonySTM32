@@ -12,5 +12,3 @@ jobs:
 
       - name: Spell check
         uses: arduino/actions/libraries/spell-check@master
-        with:
-          skip-paths: ./extras/test
