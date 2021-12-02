@@ -171,7 +171,7 @@ BGLib::BGLib( HardwareSerial *module, HardwareSerial *output, uint8_t pMode ) {
     #endif
     /*  */
 
-    /* [gatt_server] Generic Attribure Profile Server */
+    /* [gatt_server] Generic Attribute Profile Server */
     #ifdef BGLIB_ENABLE_CMD_GATT_SERVER_FIND_ATTRIBUTE
         ble_rsp_gatt_server_find_attribute = 0;
     #endif
@@ -910,7 +910,7 @@ uint8_t BGLib::parse( uint8_t ch, uint8_t packetMode ) {
                 }
                 else if( bgapiRXBuffer[2] == MESSAGE_CLASS_GATT_SERVER )
                 {
-                    /* [gatt_server] Generic Attribure Profile Server */
+                    /* [gatt_server] Generic Attribute Profile Server */
                     if (false) { }
                     #ifdef BGLIB_ENABLE_CMD_GATT_SERVER_FIND_ATTRIBUTE
                         else if( bgapiRXBuffer[3] == RSP_GATT_SERVER_FIND_ATTRIBUTE_ID ){
@@ -1556,7 +1556,7 @@ uint8_t BGLib::parse( uint8_t ch, uint8_t packetMode ) {
                 }
                 else if( bgapiRXBuffer[2] == MESSAGE_CLASS_GATT_SERVER )
                 {
-                    /* [gatt_server] Generic Attribure Profile Server */
+                    /* [gatt_server] Generic Attribute Profile Server */
                     if (false) { }
                     #ifdef BGLIB_ENABLE_EVT_GATT_SERVER_ATTRIBUTE_VALUE
                         else if( bgapiRXBuffer[3] == EVT_GATT_SERVER_ATTRIBUTE_VALUE_ID ){
@@ -2127,7 +2127,7 @@ uint8_t BGLib::ble_cmd_gatt_write_descriptor_value( uint8 connection, uint16 des
 /*  */
 
 
-/* [gatt_server] Generic Attribure Profile Server */
+/* [gatt_server] Generic Attribute Profile Server */
 #ifdef BGLIB_ENABLE_CMD_GATT_SERVER_FIND_ATTRIBUTE
 uint8_t BGLib::ble_cmd_gatt_server_find_attribute( uint16 start, uint8 type_len, const uint8 *type_data ) {
     uint8_t d[3 + type_len];

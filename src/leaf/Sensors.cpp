@@ -20,8 +20,8 @@ int Sensors::init(void)
   smeHumidity.begin();
   illum.begin(_OPT3001_ADDRESS);
   illumConfig.RangeNumber = B1100;               // automatic full scale
-  illumConfig.ConvertionTime = B1;               // convertion time = 800ms
-  illumConfig.ModeOfConversionOperation = B11;   // continous conversion
+  illumConfig.ConvertionTime = B1;               // conversion time = 800ms
+  illumConfig.ModeOfConversionOperation = B11;   // continuous conversion
   illumConfig.Latch = B0;                        // hysteresis-style
   illumErrorConfig = illum.writeConfig(illumConfig);
   if(illumErrorConfig != NO_ERROR){

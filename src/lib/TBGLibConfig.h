@@ -126,7 +126,7 @@
 #endif
 /*  */
 
-/* [gatt_server] Generic Attribure Profile Server */
+/* [gatt_server] Generic Attribute Profile Server */
 #ifdef BGLIB_ENABLE_COMMAND_CLASS_GATT_SERVER
     #define BGLIB_ENABLE_CMD_GATT_SERVER_FIND_ATTRIBUTE
     #define BGLIB_ENABLE_CMD_GATT_SERVER_READ_ATTRIBUTE_TYPE
