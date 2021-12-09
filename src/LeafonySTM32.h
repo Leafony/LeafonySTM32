@@ -30,6 +30,8 @@
 #include <Wire.h>
 #include <SPI.h>
 
+#include "STM32LowPower.h"
+
 #include "leaf/Sensors.h"
 #include "leaf/Battery.h"
 #include "leaf/BLE.h"

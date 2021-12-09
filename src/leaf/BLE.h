@@ -13,29 +13,29 @@
 #include <Arduino.h>
 #include "../lib/TBGLib.h"
 
-//=====================================================================
-// IO definition
-//=====================================================================
-// Bus-A
-// #define BLE_WAKEUP PA8
-// #define BLE_TX PA1
-// #define BLE_RX PA0
-
-// Bus-B
-#define BLE_WAKEUP PB11
-#define BLE_TX PC5
-#define BLE_RX PC4
+#define BLE_WAKEUP PB12 // D7   PB12
+#define BLE_RX PA0      // [A2] PA1
+#define BLE_TX PA1      // [A1] PA0
+#define INT_0 PC7       // INT0
+#define INT_1 PB3       // INT1
 
 class BLE {
   public:
     BLE();
     void init(void);
+    void setAdvertising();
     void startAdvertising(void);
     void sleep(void);
     void wakeup(void);
-  private:
-    HardwareSerial Serialble(BLE_TX, BLE_RX);
-    BGLib ble112((HardwareSerial *)&Serialble, 0, 0);
+
+    void onBusy(void (* Handler)(void));               // special function to run when entering a "busy" state (e.g. mid-packet)
+    void onIdle(void (* Handler)(void));               // special function to run when returning to idle mode
+    void onTimeout(void (* Handler)(void));            // special function to run when the parser times out waiting for expected data
+    void onBeforeTXCommand(void (* Handler)(void));    // special function to run immediately before sending a command
+    void onTXCommandComplete(void (* Handler)(void));  // special function to run immediately after command transmission is complete
+
+    HardwareSerial *Serialble;
+    BGLib *ble112;
 };
 
 #endif
