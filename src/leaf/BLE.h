@@ -27,12 +27,21 @@ class BLE {
     void startAdvertising(void);
     void sleep(void);
     void wakeup(void);
+    void setAdvData(uint8 len, uint8 *adv_data);
+    void startAdv(void);
 
     void onBusy(void (* Handler)(void));               // special function to run when entering a "busy" state (e.g. mid-packet)
     void onIdle(void (* Handler)(void));               // special function to run when returning to idle mode
     void onTimeout(void (* Handler)(void));            // special function to run when the parser times out waiting for expected data
     void onBeforeTXCommand(void (* Handler)(void));    // special function to run immediately before sending a command
     void onTXCommandComplete(void (* Handler)(void));  // special function to run immediately after command transmission is complete
+
+    void ble_evt_gatt_server_attribute_value(void (* Handler)(const struct ble_msg_gatt_server_attribute_value_evt_t *msg));
+    void ble_evt_le_connection_opend(void (* Handler)(const ble_msg_le_connection_opend_evt_t *msg));
+    void ble_evt_le_connection_closed(void (* Handler)(const struct ble_msg_le_connection_closed_evt_t *msg));
+    void ble_evt_system_boot(void (* Handler)(const ble_msg_system_boot_evt_t *msg));
+    void ble_evt_system_awake(void (* Handler)(void));
+    void ble_rsp_system_get_bt_address(void (* Handler)(const struct ble_msg_system_get_bt_address_rsp_t *msg));
 
     HardwareSerial *Serialble;
     BGLib *ble112;

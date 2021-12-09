@@ -18,24 +18,13 @@
 //=====================================================================
 #include <LeafonySTM32.h>
 
-//=====================================================================
-// シリアルコンソールへのデバック出力
-//      #define DEBUG = 出力あり
-//　　//#define DEBUG = 出力なし（コメントアウトする）
-//=====================================================================
 #define DEBUG
 
-//=====================================================================
-// スリープ時間、送信時間の設定
-//  SLEEP_INTERVAL : スリープ時間 (秒)
-//  WAKE_INTERVAL　：パケット送信時間 (秒)
-//=====================================================================
 #define SLEEP_INTERVAL (8)
 #define WAKE_INTERVAL  (1)
 
 static LeafonySTM32 leafony;
 
-// BLE booted
 volatile bool bSystemBootBle = false;
 
 void setupBLE()
@@ -46,38 +35,16 @@ void setupBLE()
   leafony.ble.onTimeout(onTimeout);
 
   // set up BGLib event handlers
-  leafony.ble.ble112->ble_evt_gatt_server_attribute_value = my_evt_gatt_server_attribute_value;
-  leafony.ble.ble112->ble_evt_le_connection_opend = my_evt_le_connection_opend;
-  leafony.ble.ble112->ble_evt_le_connection_closed = my_evt_le_connection_closed;
-  leafony.ble.ble112->ble_evt_system_boot = my_evt_system_boot;
-  leafony.ble.ble112->ble_evt_system_awake = my_evt_system_awake;
-  leafony.ble.ble112->ble_rsp_system_get_bt_address = my_rsp_system_get_bt_address;
+  leafony.ble.ble_evt_gatt_server_attribute_value(my_evt_gatt_server_attribute_value);
+  leafony.ble.ble_evt_le_connection_opend(my_evt_le_connection_opend);
+  leafony.ble.ble_evt_le_connection_closed(my_evt_le_connection_closed);
+  leafony.ble.ble_evt_system_boot(my_evt_system_boot);
+  leafony.ble.ble_evt_system_awake(my_evt_system_awake);
+  leafony.ble.ble_rsp_system_get_bt_address(my_rsp_system_get_bt_address);
 
-  uint8_t tm = 0;
-  leafony.ble.Serialble->begin(9600);
-  while (!leafony.ble.Serialble && tm < 150)
-  { // Serial起動待ち タイムアウト1.5s
-    tm++;
-    delay(10);
-  }
-
-  while (!bSystemBootBle)
-  { // BLE起動待ち
-    leafony.ble.ble112->checkActivity(100);
-  }
-
-  leafony.ble.ble112->ble_cmd_system_get_bt_address();
-  while (leafony.ble.ble112->checkActivity(1000));
-
-  /* interval_min : 250ms( = 400 x 0.625ms ) */
-  /* interval_max : 500ms( = 800 x 0.625ms ) */
-  leafony.ble.ble112->ble_cmd_le_gap_set_adv_parameters(400, 800, 7); /* [BGLIB] <interval_min> <interval_max> <channel_map> */
-  while (leafony.ble.ble112->checkActivity(1000));
+  leafony.ble.init();
 }
 
-//-----------------------------------------------
-// アドバタイズするデータの設定
-//-----------------------------------------------
 void StartAdvData()
 {
   // Advertising data; 25byte MAX
@@ -113,64 +80,18 @@ void StartAdvData()
   };
 
   // Register advertising packet
-  uint8_t stLen = sizeof(adv_data);
-  leafony.ble.ble112->ble_cmd_le_gap_set_adv_data(SCAN_RSP_ADVERTISING_PACKETS, stLen, adv_data);
-  while (leafony.ble.ble112->checkActivity(1000));
-
-  // index = 0  LE_GAP_SCANNABLE_NON_CONNECTABLE / LE_GAP_UNDIRECTED_CONNECTABLE
-  leafony.ble.ble112->ble_cmd_le_gap_start_advertising(0, LE_GAP_USER_DATA, LE_GAP_SCANNABLE_NON_CONNECTABLE);
-  while (leafony.ble.ble112->checkActivity(1000));
+  leafony.ble.setAdvData(sizeof(adv_data), adv_data);
+  // Start advertising
+  leafony.ble.startAdv();
 }
 
-//---------------------------------------
-// sleep BLE
-// BLE リーフをスリープさせる
-//---------------------------------------
-void sleepBLE()
-{
-  leafony.ble.ble112->ble_cmd_le_gap_stop_advertising(0);
-  while (leafony.ble.ble112->checkActivity());
-
-  leafony.ble.ble112->ble_cmd_system_halt(1);
-  while (leafony.ble.ble112->checkActivity());
-
-  digitalWrite(BLE_WAKEUP, LOW);
-  delay(500);
-}
-
-//---------------------------------------
-// wakeup BLE
-// BLEリーフをスリープから復帰させる
-//---------------------------------------
-void wakeupBLE()
-{
-  digitalWrite(BLE_WAKEUP, HIGH);
-  delay(500);
-
-  leafony.ble.ble112->ble_cmd_system_halt(0);
-  while (leafony.ble.ble112->checkActivity());
-
-  leafony.ble.ble112->ble_cmd_le_gap_set_adv_parameters(400, 800, 7);
-  while (leafony.ble.ble112->checkActivity(1000));
-}
-
-//---------------------------------------
-// setup
-//---------------------------------------
 void setup()
 {
   Serial.begin(115200);
   LowPower.begin(); // Configure low power
-
-  leafony.ble.init();
-  delay(10);
-
   setupBLE();
 }
 
-//---------------------------------------
-// loop
-//---------------------------------------
 void loop()
 {
   StartAdvData();
@@ -185,7 +106,7 @@ void loop()
 #ifdef DEBUG
   Serial.println(F("Sleep BLE"));
 #endif
-  sleepBLE();
+  leafony.ble.sleep();
 
 #ifdef DEBUG
   Serial.println(F("Sleep STM32"));
@@ -198,7 +119,7 @@ void loop()
   Serial.println(F("Wakeup STM32"));
 #endif
 
-  wakeupBLE();
+  leafony.ble.wakeup();
 #ifdef DEBUG
   Serial.println(F("Wakeup BLE"));
 #endif
@@ -207,11 +128,6 @@ void loop()
   Serial.println(F("<<< Wake up <<<"));
 #endif
 }
-
-
-// ================================================================
-// INTERNAL BGLIB CLASS CALLBACK FUNCTIONS
-// ================================================================
 
 // called when the module begins sending a command
 void onBusy()
