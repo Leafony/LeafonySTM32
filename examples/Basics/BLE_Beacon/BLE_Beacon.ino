@@ -18,8 +18,6 @@
 //=====================================================================
 #include <LeafonySTM32.h>
 
-#define DEBUG
-
 #define SLEEP_INTERVAL (8)
 #define WAKE_INTERVAL  (1)
 
@@ -95,38 +93,26 @@ void setup()
 void loop()
 {
   StartAdvData();
-#ifdef DEBUG
   Serial.println(F("Start advertise"));
   Serial.flush();
-#endif
 
   // Continue Advertising (during that STM32 sleeps.)
   LowPower.deepSleep(WAKE_INTERVAL * 1000);
 
-#ifdef DEBUG
   Serial.println(F("Sleep BLE"));
-#endif
   leafony.ble.sleep();
 
-#ifdef DEBUG
   Serial.println(F("Sleep STM32"));
   Serial.println(F(">>> Sleep >>>"));
   Serial.flush();
-#endif
-  LowPower.deepSleep(SLEEP_INTERVAL * 1000);
 
-#ifdef DEBUG
+  LowPower.deepSleep(SLEEP_INTERVAL * 1000);
   Serial.println(F("Wakeup STM32"));
-#endif
 
   leafony.ble.wakeup();
-#ifdef DEBUG
   Serial.println(F("Wakeup BLE"));
-#endif
 
-#ifdef DEBUG
   Serial.println(F("<<< Wake up <<<"));
-#endif
 }
 
 // called when the module begins sending a command
@@ -172,7 +158,6 @@ void my_evt_le_connection_closed(const struct ble_msg_le_connection_closed_evt_t
 // called when the system booted
 void my_evt_system_boot(const ble_msg_system_boot_evt_t *msg)
 {
-#ifdef DEBUG
   Serial.print("###\tsystem_boot: { ");
   Serial.print("major: ");
   Serial.print(msg->major, HEX);
@@ -187,7 +172,6 @@ void my_evt_system_boot(const ble_msg_system_boot_evt_t *msg)
   Serial.print(", hw: ");
   Serial.print(msg->hw, HEX);
   Serial.println(" }");
-#endif
 
   bSystemBootBle = true;
 }
@@ -195,15 +179,12 @@ void my_evt_system_boot(const ble_msg_system_boot_evt_t *msg)
 // called when the system awake
 void my_evt_system_awake(void)
 {
-#ifdef DEBUG
   Serial.println("###\tsystem_awake");
-#endif
 }
 
 //
 void my_rsp_system_get_bt_address(const struct ble_msg_system_get_bt_address_rsp_t *msg)
 {
-#ifdef DEBUG
   Serial.print("###\tsystem_get_bt_address: { ");
   Serial.print("address: ");
   for (int i = 0; i < 6; i++)
@@ -211,7 +192,7 @@ void my_rsp_system_get_bt_address(const struct ble_msg_system_get_bt_address_rsp
     Serial.print(msg->address.addr[i], HEX);
   }
   Serial.println(" }");
-#endif
+
   unsigned short addr = 0;
   char cAddr[30];
   addr = msg->address.addr[0] + (msg->address.addr[1] * 0x100);

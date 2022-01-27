@@ -69,3 +69,23 @@ float Sensors::getAccelY(void) {
 float Sensors::getAccelZ(void) {
   return accel.z_g;
 }
+
+float Sensors::debugEstimatedCurrent(HardwareSerial *serial) {
+  /* TODO: read internal registers in all sensors, and calculate total power consumption. */
+  serial.println("===== 4-Sensors =====");
+  serial.print("HTS221: ");
+  serial.print("0.0");
+  serial.println("uA");
+  serial.print("OPT3001: ");
+  serial.print("0.0");
+  serial.println("uA");
+  serial.print("LIS3DH: ");
+  serial.print("0.0");
+  serial.println("uA");
+  serial.print("4-Sensors Total: ");
+  serial.print("0.0");
+  serial.println("uA");
+  serial.println("=====================");
+  // return total power consumption
+  return 0.0;
+}

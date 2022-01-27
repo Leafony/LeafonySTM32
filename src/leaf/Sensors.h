@@ -26,9 +26,19 @@ class Sensors {
     float getAccelX(void);
     float getAccelY(void);
     float getAccelZ(void);
+    float debugEstimatedCurrent(HardwareSerial *serial);
   private:
     const uint8_t _OPT3001_ADDRESS=0x45;
     const uint8_t _LIS3DH_ADDRESS=0x19;
+
+    const float _HTS221_CUR_ACTIVE=2.0;
+    const float _HTS221_CUR_PDOWN=0.5;
+    const float _OPT3001_CUR_ACTIVE=3.7;
+    const float _OPT3001_CUR_PDOWN=0.4;
+    const float _LIS3DH_CUR_ACTIVE_50Hz=11.0;
+    const float _LIS3DH_CUR_ACTIVE_1Hz=2.0;
+    const float _LIS3DH_CUR_ACTIVE_LP50Hz=6.0;
+    const float _LIS3DH_CUR_PDOWN=0.5;
 
     ClosedCube_OPT3001 illum;
     OPT3001_Config illumConfig;
