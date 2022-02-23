@@ -12,7 +12,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <HTS221.h>
+#include <Adafruit_HTS221.h>
 #include <ClosedCube_OPT3001.h>
 #include <Adafruit_LIS3DH.h>
 
@@ -20,6 +20,8 @@ class Sensors {
   public:
     Sensors();
     int init(void);
+    void awakeHTS221(void);
+    void sleepHTS221(void);
     float getTemp(void);
     float getHumid(void);
     float getIllum(void);
@@ -33,6 +35,7 @@ class Sensors {
 
     const float _HTS221_CUR_ACTIVE=2.0;
     const float _HTS221_CUR_PDOWN=0.5;
+    const float _HTS221_HEATER_ON=33 * 1000; // Heater ON current at 3.3V Vdd.
     const float _OPT3001_CUR_ACTIVE=3.7;
     const float _OPT3001_CUR_PDOWN=0.4;
     const float _LIS3DH_CUR_ACTIVE_50Hz=11.0;
@@ -40,6 +43,13 @@ class Sensors {
     const float _LIS3DH_CUR_ACTIVE_LP50Hz=6.0;
     const float _LIS3DH_CUR_PDOWN=0.5;
 
+    struct _HTS221_Status {
+      bool active = false;
+      bool heater = false; 
+    } _hts221_status;
+
+    Adafruit_HTS221 hts;
+    Adafruit_Sensor *hts_humidity, *hts_temp;
     ClosedCube_OPT3001 illum;
     OPT3001_Config illumConfig;
     OPT3001_ErrorCode illumErrorConfig;
