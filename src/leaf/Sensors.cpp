@@ -22,14 +22,12 @@ int Sensors::init(void)
    ********************/
   // Try to initialize!
   if (!hts.begin_I2C()) {
-//  if (!hts.begin_SPI(HTS_CS)) {
-//  if (!hts.begin_SPI(HTS_CS, HTS_SCK, HTS_MISO, HTS_MOSI)) {
     Serial.println("Failed to find HTS221 chip");
     while (1) { delay(10); }
   }
   Serial.println("HTS221 Found!");
 
-//  hts.setDataRate(HTS221_RATE_1_HZ);
+  // hts.setDataRate(HTS221_RATE_1_HZ);
   Serial.print("Data rate set to: ");
   switch (hts.getDataRate()) {
    case HTS221_RATE_ONE_SHOT: Serial.println("One Shot"); break;
@@ -43,8 +41,7 @@ int Sensors::init(void)
 
   hts_humidity = hts.getHumiditySensor();
   hts_humidity->printSensorDetails();
-
-  _hts221_status.active = true;
+  sleepHTS221();
 
   /********************
    * OPT3001
@@ -58,6 +55,7 @@ int Sensors::init(void)
   if(illumErrorConfig != NO_ERROR){
     illumErrorConfig = illum.writeConfig(illumConfig);   //retry
   }
+  sleepOPT3001();
 
   /********************
    * LIS3DH
@@ -65,7 +63,7 @@ int Sensors::init(void)
   accel.begin(_LIS3DH_ADDRESS);
   accel.setClick(0, 0);                      // Disable Interrupt
   accel.setRange(LIS3DH_RANGE_2_G);          // Full scale +/- 2G
-  accel.setDataRate(LIS3DH_DATARATE_10_HZ);  // Data rate = 10Hz
+  sleepLIS3DH();
 
   delay(10);
   return 0;
@@ -81,6 +79,32 @@ void Sensors::sleepHTS221(void)
 {
   hts.setActive(false);
   _hts221_status.active = false;
+}
+
+void Sensors::awakeOPT3001(void)
+{
+  illumConfig.ModeOfConversionOperation = B11;
+  illumErrorConfig = illum.writeConfig(illumConfig);
+  _opt3001_status.active = true;
+}
+
+void Sensors::sleepOPT3001(void)
+{
+  illumConfig.ModeOfConversionOperation = B00;
+  illumErrorConfig = illum.writeConfig(illumConfig);
+  _opt3001_status.active = false;
+}
+
+void Sensors::awakeLIS3DH(void)
+{
+  accel.setDataRate(LIS3DH_DATARATE_50_HZ);
+  _lis3dh_status.active = true;
+}
+
+void Sensors::sleepLIS3DH(void)
+{
+  accel.setDataRate(LIS3DH_DATARATE_POWERDOWN);
+  _lis3dh_status.active = false;
 }
 
 float Sensors::getTemp(void)
@@ -141,10 +165,20 @@ float Sensors::debugEstimatedCurrent(HardwareSerial *serial) {
   /********************
    * OPT3001
    ********************/
+  if (_opt3001_status.active) {
+    cur_opt3001 += _OPT3001_CUR_ACTIVE;
+  } else {
+    cur_opt3001 += _OPT3001_CUR_PDOWN;
+  }
 
   /********************
    * LIS3DH
    ********************/
+  if (_lis3dh_status.active) {
+    cur_lis3dh += _LIS3DH_CUR_ACTIVE_50Hz;
+  } else {
+    cur_lis3dh += _LIS3DH_CUR_PDOWN;
+  }
 
   /********************
    * Monitor
