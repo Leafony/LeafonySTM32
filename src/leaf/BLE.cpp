@@ -226,7 +226,7 @@ float BLE::debugEstimatedCurrent(HardwareSerial *serial) {
   serial->print("BLE: ");
   serial->print(cur_ble);
   serial->println("uA");
-  serial->println("=====================");
+  serial->println("===============");
 
   // return total current
   return cur_total;

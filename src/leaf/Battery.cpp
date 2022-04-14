@@ -9,14 +9,27 @@
  */
 #include "Battery.h"
 
+/**
+ * @brief Construct a new Battery:: Battery object
+ * 
+ */
 Battery::Battery() {
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Battery::init(void) {
   Wire.begin();
   delay(10);
 }
 
+/**
+ * @brief 
+ * 
+ * @return float 
+ */
 float Battery::getVoltage(void) {
   // read ADC registers:
   Wire.beginTransmission(_BATT_ADC_ADDR);

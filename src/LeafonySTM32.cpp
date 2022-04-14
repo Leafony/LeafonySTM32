@@ -3,17 +3,33 @@
 
 #include "LeafonySTM32.h"
 
+/**
+ * @brief Construct a new Leafony S T M 3 2:: Leafony S T M 3 2 object
+ * 
+ */
 LeafonySTM32::LeafonySTM32() : _isInited(0) {
 }
 
+/**
+ * @brief 
+ * 
+ */
 void LeafonySTM32::begin() {
   Serial.begin(115200);
 }
 
+/**
+ * @brief 
+ * 
+ */
 void LeafonySTM32::update() {
 
 }
 
+/**
+ * @brief 
+ * 
+ */
 void LeafonySTM32::powerOff() {
 
 }
