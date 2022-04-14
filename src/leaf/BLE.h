@@ -43,8 +43,18 @@ class BLE {
     void ble_evt_system_awake(void (* Handler)(void));
     void ble_rsp_system_get_bt_address(void (* Handler)(const struct ble_msg_system_get_bt_address_rsp_t *msg));
 
+    float debugEstimatedCurrent(HardwareSerial *serial);
+
     HardwareSerial *Serialble;
     BGLib *ble112;
+
+  private:
+    const float _BLE_CUR_ACTIVE = 3.8 * 1000;
+    const float _BLE_CUR_SLEEP = 2.8;
+
+    struct _BLE_Status {
+      bool active = false;
+    } _ble_status;
 };
 
 #endif

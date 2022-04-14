@@ -25,7 +25,7 @@ BLE::BLE() {
 void BLE::init(void) {
   pinMode(BLE_WAKEUP, OUTPUT);    // BLE Wakeup/Sleep
   digitalWrite(BLE_WAKEUP, HIGH); // BLE Wakeup
-
+  _ble_status.active = true;
 
   uint8_t tm = 0;
   this->Serialble->begin(9600);
@@ -63,6 +63,7 @@ void BLE::sleep(void) {
 
   digitalWrite(BLE_WAKEUP, LOW);
   delay(500);
+  _ble_status.active = false;
 }
 
 /**
@@ -72,6 +73,7 @@ void BLE::sleep(void) {
 void BLE::wakeup(void) {
   digitalWrite(BLE_WAKEUP, HIGH);
   delay(500);
+  _ble_status.active = true;
 
   this->ble112->ble_cmd_system_halt(0);
   while (this->ble112->checkActivity());
@@ -197,4 +199,35 @@ void BLE::ble_evt_system_awake(void (* Handler)(void)) {
  */
 void BLE::ble_rsp_system_get_bt_address(void (* Handler)(const struct ble_msg_system_get_bt_address_rsp_t *msg)) {
   this->ble112->ble_rsp_system_get_bt_address = Handler;
+}
+
+/**
+ * @brief 
+ * 
+ * @param serial 
+ * @return float 
+ */
+float BLE::debugEstimatedCurrent(HardwareSerial *serial) {
+  float cur_ble = 0.0;
+  float cur_total;
+
+  /********************
+   * BLE
+   ********************/
+  if (_ble_status.active) cur_ble += _BLE_CUR_ACTIVE;
+  else cur_ble += _BLE_CUR_SLEEP;
+
+  /********************
+   * Monitor
+   ********************/
+  cur_total = cur_ble;
+
+  serial->println("===== BLE =====");
+  serial->print("BLE: ");
+  serial->print(cur_ble);
+  serial->println("uA");
+  serial->println("=====================");
+
+  // return total current
+  return cur_total;
 }

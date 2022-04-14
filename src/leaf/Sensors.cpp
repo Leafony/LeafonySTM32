@@ -9,10 +9,19 @@
  */
 #include "Sensors.h"
 
+/**
+ * @brief Construct a new Sensors:: Sensors object
+ * 
+ */
 Sensors::Sensors()
 {
 }
 
+/**
+ * @brief 
+ * 
+ * @return int 
+ */
 int Sensors::init(void)
 {
   Wire.begin();
@@ -69,18 +78,30 @@ int Sensors::init(void)
   return 0;
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Sensors::awakeHTS221(void)
 {
   hts.setActive(true);
   _hts221_status.active = true;
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Sensors::sleepHTS221(void)
 {
   hts.setActive(false);
   _hts221_status.active = false;
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Sensors::awakeOPT3001(void)
 {
   illumConfig.ModeOfConversionOperation = B11;
@@ -88,6 +109,10 @@ void Sensors::awakeOPT3001(void)
   _opt3001_status.active = true;
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Sensors::sleepOPT3001(void)
 {
   illumConfig.ModeOfConversionOperation = B00;
@@ -95,18 +120,31 @@ void Sensors::sleepOPT3001(void)
   _opt3001_status.active = false;
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Sensors::awakeLIS3DH(void)
 {
   accel.setDataRate(LIS3DH_DATARATE_50_HZ);
   _lis3dh_status.active = true;
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Sensors::sleepLIS3DH(void)
 {
   accel.setDataRate(LIS3DH_DATARATE_POWERDOWN);
   _lis3dh_status.active = false;
 }
 
+/**
+ * @brief 
+ * 
+ * @return float 
+ */
 float Sensors::getTemp(void)
 {
   sensors_event_t temp;
@@ -114,6 +152,11 @@ float Sensors::getTemp(void)
   return temp.temperature;
 }
 
+/**
+ * @brief 
+ * 
+ * @return float 
+ */
 float Sensors::getHumid(void)
 {
   sensors_event_t humidity;
@@ -121,6 +164,11 @@ float Sensors::getHumid(void)
   return humidity.relative_humidity;
 }
 
+/**
+ * @brief 
+ * 
+ * @return float 
+ */
 float Sensors::getIllum(void)
 {
   OPT3001 result = illum.readResult();
@@ -132,18 +180,39 @@ float Sensors::getIllum(void)
   return _dataIllum;
 }
 
+/**
+ * @brief 
+ * 
+ * @return float 
+ */
 float Sensors::getAccelX(void) {
   return accel.x_g;
 }
 
+/**
+ * @brief 
+ * 
+ * @return float 
+ */
 float Sensors::getAccelY(void) {
   return accel.y_g;
 }
 
+/**
+ * @brief 
+ * 
+ * @return float 
+ */
 float Sensors::getAccelZ(void) {
   return accel.z_g;
 }
 
+/**
+ * @brief 
+ * 
+ * @param serial 
+ * @return float 
+ */
 float Sensors::debugEstimatedCurrent(HardwareSerial *serial) {
   /* TODO: read internal registers in all sensors, and calculate total power consumption. */
   float cur_hts221 = 0.0;
@@ -199,6 +268,6 @@ float Sensors::debugEstimatedCurrent(HardwareSerial *serial) {
   serial->print(cur_total);
   serial->println("uA");
   serial->println("=====================");
-  // return total power consumption
+  // return total current
   return cur_total;
 }
