@@ -4,7 +4,7 @@
  * @version 0.1
  * @date 2021-11-23
  * 
- * @copyright Copyright (c) Leafony Systems 2021
+ * @copyright Copyright (c) Leafony Systems 2022
  * 
  */
 #ifndef _LEAF_SENSORS_
