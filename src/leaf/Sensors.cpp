@@ -186,6 +186,7 @@ float Sensors::getIllum(void)
  * @return float 
  */
 float Sensors::getAccelX(void) {
+  accel.read();
   return accel.x_g;
 }
 
@@ -195,6 +196,7 @@ float Sensors::getAccelX(void) {
  * @return float 
  */
 float Sensors::getAccelY(void) {
+  accel.read();
   return accel.y_g;
 }
 
@@ -204,6 +206,7 @@ float Sensors::getAccelY(void) {
  * @return float 
  */
 float Sensors::getAccelZ(void) {
+  accel.read();
   return accel.z_g;
 }
 
