@@ -45,7 +45,7 @@ Make sure to include the LeafonySTM32 library in files that use it.
 #include <LeafonySTM32.h>
 ```
 
-and then instanciate LeafonySTM32 class as a static variable.
+and then instantiate LeafonySTM32 class as a static variable.
 
 ```cpp
 static LeafonySTM32 leafony;
